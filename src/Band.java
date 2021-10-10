@@ -2,29 +2,32 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Band {
-    private int bandId;
-    private String bandName;
-    //private String bandImage;
+public class Band extends SuperClass{
+    //private String bandLogo;
     //private String bandTpe;
 
-    public Band(int bandId, String bandName) {
-        this.bandId = bandId;
-        this.bandName = bandName;
+
+    public Band(int id, String name, String address) {
+        super(id, name, address);
     }
 
-    public String getName(){
-        return this.bandName;
+    @Override
+    public int getId() {
+        return super.getId();
     }
-    public int getBandId(){
-       return this.bandId;
+
+    @Override
+    public String getName() {
+        return super.getName();
+    }
+
+    @Override
+    public String getAddress() {
+        return super.getAddress();
     }
 
     @Override
     public String toString() {
-        return "Band{" +
-                "bandId=" + bandId +
-                ", bandName='" + bandName + '\'' +
-                '}';
+        return "Band " + super.toString() +"\n";
     }
 }
