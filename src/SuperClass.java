@@ -1,4 +1,4 @@
-public class SuperClass {
+public abstract class SuperClass {
     private int id;
     private String name;
     private String address;

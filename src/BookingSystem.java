@@ -1,40 +1,35 @@
-import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class BookingSystem{
     static Scanner scanner = new Scanner(System.in);
-    static final String COMPANY_ADDRESS = "Hundige bygade 00, 2670, Greve";
+    static final String COMPANY_ADDRESS = "Hundige bygade 00, 2670, Greve"; // will use for  general contact
+
     public static void main(String[] args) {
 
-        addSomeBandsToDataStoreHouse(); // add some bands to the Data Store house to start with
-        addSomeEventsToEventData(); // add some events to the Data Store house to start with
-        add5EventManager(); // add five event manager to the data store house to start with
-        addSomeContract(); // will add some contracts to the data store house to start with
-        addSomeProgram(); // add some program to the data store house to start with
-
-        //DataStoreHouse.printListOfAllBand(); // print a list of all band
-        //DataStoreHouse.printListOfAllEvents(); // print a list of all events
-        //DataStoreHouse.printListOfAllEventManager(); // print a list of all event manager
-        //DataStoreHouse.printListOfAllContract(); // will print a list of all contract
-        //System.out.println(DataStoreHouse.programData);
+        // add some bands, events, event manager, contracts and programs to the Data store house to start with
+        // so that different methods can be checked easily
+        addSomeBandsToDataStoreHouse();
+        addSomeEventsToEventData();
+        add5EventManager();
+        addSomeContract();
+        addSomeProgram();
 
 
-
-        //int choseATask = getTask();
-        //startTask(choseATask);
-
+        // start activities
         while (true){
-            int taskToDo = getAddOrUpdateOrView(); //ask what the booking manager wants to do and get the choice as integer
+            int taskToDo = getAddOrUpdateOrView(); //ask what the booking manager what  to do and get the choice as integer
             startTask(taskToDo); // start the chosen task
             if (quitBookingSystem().equals("q")) { break; } // exit the booking system by entering "q"
         }
     } // end of main
 
+    // method will start a given task by calling other methods base on user decided to add something (1), update current data (2) or view current data (3)
     public static void startTask(int taskToDo){
         if (taskToDo == 1) { // create and add something to the data store house
             int whatToAdd = getWhatToAdd();
             createAndAdd(whatToAdd);
-        } else if (taskToDo == 2) {
+        } else if (taskToDo == 2) { // update an existing data
             int whatToUpdate = getWhatToUpdate();
             updateData(whatToUpdate);
         } else if (taskToDo == 3) { // view list of different data
@@ -85,76 +80,208 @@ public class BookingSystem{
 
     }
 
+    // get users choice to update, ask for updated data by calling other methods, finally update the existing data
     public static void updateData(int whatToUpdate){
+        int idToUpdate = getIdTobeUpdated(); // get specific id no, where we are going tio update
         switch (whatToUpdate) {
             case 1: // update a Band
-                break;
-            case 2: //update an Event
-                /*
-                int idOfDataToUpdate = 3;
-                checkIfIdExist(whatToUpdate, idOfDataToUpdate);
-
-                for (int i = 0; i < 1; i++) {
-                    Event individualEventInEventData =  DataStoreHouse.eventData.get(i);
-                    int eventIdInEventData = individualEventInEventData.getId();
-                    if (eventIdInEventData == idOfDataToUpdate) {
-                        System.out.println("Found");
-                    } else{
-                        System.out.println("Given id do not exist");
-                        System.out.println();
-                    }
-
-                    System.out.print(individualEventInEventData.getId()+"\t");
-                    System.out.print(individualEventInEventData.getName()+"\t");
-                    System.out.print(individualEventInEventData.getAddress()+"\t");
-                    System.out.print(individualEventInEventData.getEventStartAndFinishTime()+"\t");
-                    int[] bandIds = individualEventInEventData.getBandIds();
-                    for (int  bandid: bandIds) {
-                        System.out.print(bandid+", ");
-                    }
-                    System.out.print(individualEventInEventData.getEventManagerId()+"\t");
-                    System.out.println();
-
-
+                int indexOfIdAtBandData = getIndexOfGivenId(idToUpdate, 1); // 1 means band data need to update
+                if (indexOfIdAtBandData == -1) {// id not present in dataset
+                    System.out.println(" given id do not exist in dataset");
+                } else { // id found, so update
+                    updateBandData(indexOfIdAtBandData);
                 }
-
-                 */
+                break;
+            case 2: //update an Event
+                    System.out.println("this feature coming soon");
                 break;
             case 3: // update a Contract
+                System.out.println("Sorry once signed, an contract can't be updated");
                 break;
             case 4: // update an Event Manager
+                int indexOfIdAtEventManagerData = getIndexOfGivenId(idToUpdate, 4); // 4 means event manager data need to update
+                if (indexOfIdAtEventManagerData == -1) { // id not present in dataset
+                    System.out.println(" given id do not exist in dataset");
+                } else { // id found, so update
+                    updateEventManagerData(indexOfIdAtEventManagerData);
+                }
                 break;
             case 5: // update a Program
+                int indexOfProgramAtProgramData = getIndexOfGivenId(idToUpdate, 5); // 5 means program data need to update
+                if (indexOfProgramAtProgramData == -1) {// id not present in dataset
+                    System.out.println(" given id do not exist in dataset");
+                } else { // id found, so update
+                    updateProgramData(indexOfProgramAtProgramData);
+                }
                 break;
             default:break;
         }
     }
 
-    public static void checkIfIdExist(int whatToUpdate, int idOfDataToUpdate){
+    // method to update an existing program
+    public static void updateProgramData(int indexOfIdAtProgramData){
+        Program programToUpdate = DataStoreHouse.programData.get(indexOfIdAtProgramData); // get the program that need to update
+        int programId = programToUpdate.getId(); // get id and then print
+        System.out.println("id: " + programId);
+        int eventId = programToUpdate.getEventId(); // get event id and then print
+        System.out.println("Event id: " + eventId);
+        int eventManagerId = programToUpdate.getEventManagerId(); // get event manager id and then print
+        System.out.println("Event Manager id: " + eventManagerId);
+        String programDetail =programToUpdate.getProgramDetail(); // get program detail and print
+        System.out.println("Program detail: " + programDetail);
+
+        Pattern checkIfTpeN = Pattern.compile("n"); // to check if user has typed n or not during input
+
+        // ask to provide new information or type "n", if you do not want to update that specific field
+        System.out.println("Please enter new event id or type n to keep the current name");
+        while (!scanner.hasNext(checkIfTpeN)){
+            eventId = Integer.parseInt(scanner.nextLine());
+            break;
+        }
+        // ask to provide new information or type "n", if you do not want to update that specific field
+        System.out.println("Please enter event manager id or type n to keep the current address");
+        while (!scanner.hasNext(checkIfTpeN)){
+            eventManagerId = Integer.parseInt(scanner.nextLine());
+            break;
+        }
+        // ask to provide new information or type "n", if you do not want to update that specific field
+        System.out.println("Please enter event detail or type n to keep the current address");
+        while (!scanner.hasNext(checkIfTpeN)){
+            programDetail = scanner.nextLine();
+            break;
+        }
+
+        Program updatedProgram = new Program(programId, eventId, eventManagerId, programDetail); // make new program from updated values
+        DataStoreHouse.programData.set(indexOfIdAtProgramData, updatedProgram); // replace old band with updated band
+        System.out.println("Successfully updated, see below:");
+        System.out.println(DataStoreHouse.programData.get(indexOfIdAtProgramData)); // print updated dataset
+    }
+
+    // check if id give by user (that he wants to update) already exist or not.
+    // If exist return the index where that id stored
+    // if not return "-1"
+    public static int getIndexOfGivenId(int id, int whatToUpdate){
+        int indexWhereIdFound = -1;
         switch (whatToUpdate) {
             case 1: // update a Band
+                for (int i = 0; i < DataStoreHouse.bandData.size(); i++) {
+                    Band individualBand = DataStoreHouse.bandData.get(i);
+                    int BandId = individualBand.getId();
+                    if (BandId == id) {
+                        indexWhereIdFound = i;
+                        break;
+                    }
+                }
                 break;
             case 2: //update an Event
                 break;
             case 3: // update a Contract
                 break;
             case 4: // update an Event Manager
+                for (int i = 0; i < DataStoreHouse.eventManagerData.size(); i++) {
+                    EventManager individualEventManager = DataStoreHouse.eventManagerData.get(i);
+                    int eventManagerId = individualEventManager.getId();
+                    if (eventManagerId == id) { indexWhereIdFound = i;}
+                }
                 break;
             case 5: // update a Program
+                for (int i = 0; i < DataStoreHouse.programData.size(); i++) {
+                    Program individualProgram = DataStoreHouse.programData.get(i);
+                    int programId = individualProgram.getId();
+                    if (programId == id) { indexWhereIdFound = i;}
+                }
                 break;
             default:break;
         }
+        return indexWhereIdFound;
+    }
 
+    // method to update band data
+    public static void updateBandData(int indexOfIdAtBandData){
+        Band bandToUpdate = DataStoreHouse.bandData.get(indexOfIdAtBandData); // get the individual band to update
+        int bandId = bandToUpdate.getId(); // get id and then print
+        System.out.println("id: " + bandId);
+        String bandName = bandToUpdate.getName(); // get name and print
+        System.out.println("Name: " + bandName);
+        String bandAddress =bandToUpdate.getAddress(); // get address and print
+        System.out.println("Address: " + bandAddress);
 
+        Pattern checkIfTpeN = Pattern.compile("n"); // to check if user has typed n or not during input
+
+        // ask to provide new information or type "n", if you do not want to update that specific field
+        System.out.println("Please enter new name or type n to keep the current name");
+        while (!scanner.hasNext(checkIfTpeN)){
+            bandName = scanner.nextLine();
+            break;
+        }
+        // ask to provide new information or type "n", if you do not want to update that specific field
+        System.out.println("Please enter new address or type n to keep the current address");
+        while (!scanner.hasNext(checkIfTpeN)){
+            bandAddress = scanner.nextLine();
+            break;
+        }
+
+        Band updatedBand = new Band(bandId, bandName, bandAddress);// make new band from updated values
+        DataStoreHouse.bandData.set(indexOfIdAtBandData, updatedBand); // replace old band with updated band
+        System.out.println("Successfully updated, see below:");
+        System.out.println(DataStoreHouse.bandData.get(indexOfIdAtBandData)); // print updated dataset
 
     }
 
-    //???????? retrieve data from data store house and print it
+    // method will update event manager data
+    public static void updateEventManagerData(int indexOfIdAtDataset){
+        EventManager eventManagerToUpdate = DataStoreHouse.eventManagerData.get(indexOfIdAtDataset); // get the individual event manager to update
+        int eventManagerId = eventManagerToUpdate.getId(); // get id and then print
+        System.out.println("id: " + eventManagerId);
+        String eventManagerName = eventManagerToUpdate.getName(); // get name and print
+        System.out.println("Name: " + eventManagerName);
+        String eventManagerContact = eventManagerToUpdate.getEventManagerContact(); // get contact and print
+        System.out.println("Contact: "+ eventManagerContact);
+        String eventManagerAddress =eventManagerToUpdate.getAddress(); // get address and print
+        System.out.println("Address: " + eventManagerAddress);
+
+        Pattern checkIfTpeN = Pattern.compile("n"); // to check if user has typed n or not during input
+
+        // ask to provide new information or type "n", if you do not want to update that specific field
+        System.out.println("Please enter new name or type n to keep the current name");
+        while (!scanner.hasNext(checkIfTpeN)){
+            eventManagerName = scanner.nextLine();
+            break;
+        }
+        // ask to provide new information or type "n", if you do not want to update that specific field
+        System.out.println("Please enter new contact or type n to keep the current contact");
+        while (!scanner.hasNext(checkIfTpeN)){
+            eventManagerContact = scanner.nextLine();
+            break;
+        }
+
+        EventManager updateEventManger = new EventManager(eventManagerId, eventManagerName, eventManagerAddress, eventManagerContact); // make new event manager from updated value
+        DataStoreHouse.eventManagerData.set(indexOfIdAtDataset, updateEventManger); // replace old event manger with updated event manager
+        System.out.println("Successfully updated, see below:");
+        System.out.println(DataStoreHouse.eventManagerData.get(indexOfIdAtDataset)); // print updated dataset
+
+    }
+
+    // get the id no, so we can update that specific data
+    public static int getIdTobeUpdated(){
+        int idToBeUpdated = 0;
+        while (true){
+            try {
+                System.out.println("Enter id to update");
+                idToBeUpdated = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (Exception e){
+                System.out.println("please enter an id no");
+            }
+        }
+        return idToBeUpdated;
+    }
+
+    //retrieve data from data store house and print it
     public static void viewChosenData(int whatToView){
         switch (whatToView) {
             case 1: // view Band
-                System.out.println(DataStoreHouse.bandData);
-                //DataStoreHouse.printListOfAllBand(); // print a list of all band
+                DataStoreHouse.printListOfAllBand(); // print a list of all band
                 break;
             case 2: //view Event
                 DataStoreHouse.printListOfAllEvents(); // print a list of all events
@@ -166,7 +293,7 @@ public class BookingSystem{
                 DataStoreHouse.printListOfAllEventManager(); // print a list of all event manager
                 break;
             case 5: // view Program
-                System.out.println(DataStoreHouse.programData);
+                DataStoreHouse.printListOfAllProgram();
                 break;
             default:break;
         }

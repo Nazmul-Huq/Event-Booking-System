@@ -1,11 +1,5 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Band extends SuperClass{
-    //private String bandLogo;
-    //private String bandTpe;
-
 
     public Band(int id, String name, String address) {
         super(id, name, address);

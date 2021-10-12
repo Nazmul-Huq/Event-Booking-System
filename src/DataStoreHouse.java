@@ -9,43 +9,30 @@ public class DataStoreHouse {
     static ArrayList<Program> programData = new ArrayList<>();
 
 
-    /*
-    * add a newly created band to the bandData arraylist
-     */
-    public static void addBand(Band newBand){
-        bandData.add(newBand);
+    //add a newly created band to the bandData arraylist
+    public static void addBand(Band newBand){ bandData.add(newBand); }
 
-    }
-
-    /*
-     * add a newly created event to the eventData arraylist
-     */
+    //* add a newly created event to the eventData arraylist
     public static void addEvent(Event newEvent) {
         eventData.add(newEvent);
     }
 
-    /*
-     * add an event manager to the eventManagerData arraylist
-     */
+    //add an event manager to the eventManagerData arraylist
     public static void addEventManager(EventManager newEventManager) {
     eventManagerData.add(newEventManager);
     }
 
-    /*
-     * add a contract to the contractData arraylist
-     */
+    //add a contract to the contractData arraylist
     public static void addContract(Contract newContract) {
         contractData.add(newContract);
     }
 
+    // add a program to the program data
     public static void addProgram(Program newProgram){
         programData.add(newProgram);
     }
 
-
-    /*
-    * print list of all band with all data
-     */
+    //print list of all band with all data
     public static void printListOfAllBand(){
         System.out.println("Id\tBand Name\t\t\tBand Address");
         for (int i = 0; i < DataStoreHouse.bandData.size(); i++) {
@@ -59,11 +46,9 @@ public class DataStoreHouse {
         }
     }
 
-    /*
-    * method ot print a list of event manager and their data
-     */
+    //method ot print a list of event manager and their data
     public static void printListOfAllEventManager(){
-        System.out.println("Id\tBand Name\t\t\tBand Address");
+        System.out.println("Manager Id \t Manager Name\t\t\t Manager  Address and Contact");
         for (int i = 0; i < DataStoreHouse.eventManagerData.size(); i++) {
             EventManager individualManagerInEventManagerData =  DataStoreHouse.eventManagerData.get(i);
             System.out.print(individualManagerInEventManagerData.getId());
@@ -78,71 +63,50 @@ public class DataStoreHouse {
         }
     }
 
-    /*
-    * print list of all events with all data
-     */
+    // print list of all events with all data
     public static void printListOfAllEvents(){
+        System.out.println("Event Id. \t Event Name \t Address \t Time \t\t\t Band Id");
         for (int i = 0; i < DataStoreHouse.eventData.size(); i++) {
             Event individualEventInEventData =  DataStoreHouse.eventData.get(i);
-            System.out.print(individualEventInEventData.getId()+"\t");
-            System.out.print(individualEventInEventData.getName()+"\t");
-            System.out.print(individualEventInEventData.getAddress()+"\t");
-            System.out.print(individualEventInEventData.getEventStartAndFinishTime()+"\t");
+            System.out.print(individualEventInEventData.getId()+"\t\t\t\t");
+            System.out.print(individualEventInEventData.getName()+"\t\t\t");
+            System.out.print(individualEventInEventData.getAddress()+"\t\t\t");
+            System.out.print(individualEventInEventData.getEventStartAndFinishTime()+"\t\t\t");
             int[] bandIds = individualEventInEventData.getBandIds();
             for (int  bandid: bandIds) {
                 System.out.print(bandid+", ");
             }
-            System.out.print(individualEventInEventData.getEventManagerId()+"\t");
+            System.out.print(individualEventInEventData.getEventManagerId());
             System.out.println();
         }
     }
 
-    /*
-     * print list of all contracts
-     */
+    //print list of all contracts
     public static void printListOfAllContract(){
+        System.out.println("Contract No. \t Band Id \t Manager Id \t Price \t\t\t Contract Detail");
         for (int i = 0; i < DataStoreHouse.contractData.size(); i++) {
             Contract contractInEventData =  DataStoreHouse.contractData.get(i);
-            System.out.print(contractInEventData.getId()+"\t");
-            System.out.print(contractInEventData.getBandId()+"\t");
-            System.out.print(contractInEventData.getEventManagerId()+"\t");
+            System.out.print(contractInEventData.getId()+"\t\t\t\t\t");
+            System.out.print(contractInEventData.getBandId()+"\t\t\t");
+            System.out.print(contractInEventData.getEventManagerId()+"\t\t\t");
+            System.out.print(contractInEventData.getContractPrice()+"\t\t\t");
             System.out.print(contractInEventData.getContractDetail()+"\t");
-            System.out.print(contractInEventData.getContractPrice()+"\t");
             System.out.println();
         }
     }
 
-
-
-    public static int getIndexOfBandFromBandData(String bandName) {
-        int arrayIndex = -1;
-        for (int i = 0; i < bandData.size(); i++) {
-            Band individualBandInBandData =  bandData.get(i);
-            String bandNameInBandData = individualBandInBandData.getName();
-            if (individualBandInBandData.equals(bandName)) {
-                arrayIndex = i;
-            }
+    // print list of all program
+    public static void printListOfAllProgram(){
+        System.out.println("Program Id \t Event Id \t Event manager Id \t Program Detail");
+        for (int i = 0; i < DataStoreHouse.programData.size(); i++) {
+            Program programInProgramData =  DataStoreHouse.programData.get(i);
+            System.out.print(programInProgramData.getId()+"\t\t\t\t");
+            System.out.print(programInProgramData.getEventId()+"\t\t\t");
+            System.out.print(programInProgramData.getEventManagerId()+"\t\t\t\t");
+            System.out.print(programInProgramData.getProgramDetail());
+            System.out.println();
         }
-        return arrayIndex;
     }
 
-
-
-
-
-    /*
-    ???????? may be use later
-     static ArrayList<ArrayList<String>> bandData = new ArrayList<>();
-        public static void addBand(Band newBand) {
-        String id = Integer.toString(newBand.getId());
-        String name = newBand.getName();
-        String address = newBand.getAddress();
-        ArrayList<String> row = new ArrayList<String>();
-        row.add(id);
-        row.add(name);
-        row.add(address);
-        bandData.add(row);
-    }
-     */
 
 } // end of class
